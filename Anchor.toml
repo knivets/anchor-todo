@@ -1,0 +1,12 @@
+[programs.localnet]
+todo = "F3j2R9WWmDFwNHLcyo9KCdQzSHxPohf21Nw5Gzf1BM2X"
+
+[registry]
+url = "https://anchor.projectserum.com"
+
+[provider]
+cluster = "localnet"
+wallet = "/Users/knivets/.config/solana/id.json"
+
+[scripts]
+test = "mocha -t 1000000 tests/"
