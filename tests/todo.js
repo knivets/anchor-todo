@@ -1,9 +1,8 @@
 const anchor = require('@project-serum/anchor');
 const assert = require("assert");
-const web3 = require('@solana/web3.js');
 
 //const program = anchor.workspace.Todo;
-const connection = new web3.Connection('http://127.0.0.1:8899');
+const connection = new anchor.web3.Connection('http://127.0.0.1:8899');
 
 describe('todo', async () => {
     // Configure the client to use the local cluster.
@@ -11,8 +10,8 @@ describe('todo', async () => {
     anchor.setProvider(provider);
     const program = anchor.workspace.Todo;
     let todosAccount, accountBump = null;
-    [todosAccount, accountBump] = await web3.PublicKey.findProgramAddress([
-        Buffer.from("todo_list3")], program.programId)
+    [todosAccount, accountBump] = await anchor.web3.PublicKey.findProgramAddress([
+        provider.wallet.publicKey.toBuffer()], program.programId)
 
     console.log(todosAccount, accountBump);
 
@@ -31,15 +30,18 @@ describe('todo', async () => {
         const tx = await program.rpc.add('hello world', {
             accounts: {
                 todoList: todosAccount,
+                user: provider.wallet.publicKey,
             },
         });
         console.log("Your transaction signature", tx);
 
         const res = await program.account.todoList.fetch(todosAccount);
         assert.ok(res.list[0] === 'hello world');
+        return;
 
         await program.rpc.add('hello world', {
             accounts: {
+                user: provider.wallet.publicKey,
                 todoList: todosAccount,
             },
         });

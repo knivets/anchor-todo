@@ -19,7 +19,7 @@ pub mod todo {
 #[derive(Accounts)]
 #[instruction(bump: u8)]
 pub struct Initialize<'info> {
-    #[account(init, seeds = [b"todo_list3"], bump = bump, payer = user, space = 64 + 64)]
+    #[account(init, seeds = [user.key.as_ref()], bump = bump, payer = user, space = 5000)]
     todo_list: Account<'info, TodoList>,
     user: Signer<'info>,
     system_program: Program<'info, System>,
@@ -27,7 +27,8 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct Add<'info> {
-    #[account(mut, seeds = [b"todo_list3"], bump = todo_list.bump)]
+    #[account(mut, seeds = [user.key.as_ref()], bump = todo_list.bump)]
+    user: Signer<'info>,
     todo_list: Account<'info, TodoList>,
 }
 
