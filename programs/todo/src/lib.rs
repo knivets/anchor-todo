@@ -5,7 +5,8 @@ declare_id!("F3j2R9WWmDFwNHLcyo9KCdQzSHxPohf21Nw5Gzf1BM2X");
 #[program]
 pub mod todo {
     use super::*;
-    pub fn initialize(ctx: Context<Initialize>) -> ProgramResult {
+    pub fn initialize(ctx: Context<Initialize>, bump: u8) -> ProgramResult {
+        ctx.accounts.todo_list.bump = bump;
         Ok(())
     }
 
@@ -15,11 +16,10 @@ pub mod todo {
     }
 }
 
-//#[instruction(bump: u8)]
 #[derive(Accounts)]
+#[instruction(bump: u8)]
 pub struct Initialize<'info> {
-    //#[account(init, seeds = [b"todo_list"], bump = bump, payer = user, space = 64 + 64)]
-    #[account(init, payer = user, space = 64 + 64)]
+    #[account(init, seeds = [b"todo_list3"], bump = bump, payer = user, space = 64 + 64)]
     todo_list: Account<'info, TodoList>,
     user: Signer<'info>,
     system_program: Program<'info, System>,
@@ -27,13 +27,14 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct Add<'info> {
-    #[account(mut)]
+    #[account(mut, seeds = [b"todo_list3"], bump = todo_list.bump)]
     todo_list: Account<'info, TodoList>,
 }
 
 #[account]
 pub struct TodoList {
     //todo_list: Vec<Account<'info, TodoItem>>,
+    bump: u8,
     list: Vec<String>
 }
 
