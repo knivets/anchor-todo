@@ -27,8 +27,8 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct Add<'info> {
-    #[account(mut, seeds = [user.key.as_ref()], bump = todo_list.bump)]
     user: Signer<'info>,
+    #[account(mut, seeds = [user.key.as_ref()], bump = todo_list.bump)]
     todo_list: Account<'info, TodoList>,
 }
 
